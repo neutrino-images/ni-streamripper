@@ -23,9 +23,9 @@ AC_ARG_ENABLE(vorbistest, [  --disable-vorbistest       Do not try to compile an
     VORBIS_LIBS="-L$prefix/lib"
   fi
 
-  VORBIS_LIBS="$VORBIS_LIBS -lvorbis -lm"
-  VORBISFILE_LIBS="-lvorbisfile"
-  VORBISENC_LIBS="-lvorbisenc"
+   VORBIS_LIBS="-lvorbisidec"
+   VORBISFILE_LIBS="-lvorbisfile"
+   VORBISENC_LIBS="-lvorbisenc"
 
   if test "x$vorbis_includes" != "x" ; then
     VORBIS_CFLAGS="-I$vorbis_includes"

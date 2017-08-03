@@ -33,8 +33,7 @@
 #include "mchar.h"
 
 #if (HAVE_OGG_VORBIS)
-#include <ogg/ogg.h>
-#include <vorbis/codec.h>
+#include <tremor/ivorbiscodec.h>
 #include <locale.h>
 
 
