@@ -11,7 +11,7 @@ dnl   AC_CHECK_FUNC:  defines a shell variable
 
 AC_PREREQ(2.59)
 AC_INIT(streamripper,1.64.6)
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 
 AC_CONFIG_HEADERS([lib/config.h])
 
