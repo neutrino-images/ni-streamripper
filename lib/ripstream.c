@@ -713,11 +713,7 @@ write_id3v2_frame(RIP_MANAGER_INFO* rmi, char* tag_name, mchar* data,
     int rc;
     char bigbuf[HEADER_SIZE] = "";
     ID3V2frame id3v2frame;
-#ifndef WIN32
-    __uint32_t framesize = 0;
-#else
-    unsigned long int framesize = 0;
-#endif
+    uint32_t framesize = 0;
 
     memset(&id3v2frame, '\000', sizeof(id3v2frame));
     strncpy(id3v2frame.id, tag_name, 4);
