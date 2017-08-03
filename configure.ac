@@ -56,7 +56,7 @@ AC_ARG_WITH(curses,
   [  --with-curses(=XXX) compile curses front-end (XXX is curses (default), ncurses, ncursesw, pdcurses or slang)])
 
 
-CPPFLAGS="-D__UNIX__"
+CPPFLAGS="$CPPFLAGS -D__UNIX__"
 AC_SUBST(CPPFLAGS)
 
 
