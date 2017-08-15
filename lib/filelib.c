@@ -81,6 +81,7 @@ static void fill_date_buf (RIP_MANAGER_INFO* rmi, gchar* datebuf,
 static error_code filelib_open_showfiles (RIP_MANAGER_INFO* rmi);
 static void move_file (RIP_MANAGER_INFO* rmi, gchar* new_filename, gchar* old_filename);
 static gchar* replace_invalid_chars (gchar *str);
+static gchar* replace_spaces (gchar *str);
 static void remove_trailing_periods (gchar *str);
 static BOOL new_file_is_better (RIP_MANAGER_INFO* rmi, gchar *oldfile, gchar *newfile);
 static void delete_file (RIP_MANAGER_INFO* rmi, gchar* filename);
@@ -260,6 +261,7 @@ filelib_start (RIP_MANAGER_INFO* rmi, TRACK_INFO* ti)
     msnprintf (fnbase1, TEMP_STR_LEN, m_S m_(" - ") m_S, 
 	       ti->artist, ti->title);
     trim_filename (rmi, fnbase, fnbase1);
+    replace_spaces (fnbase);
     msnprintf (newfile, TEMP_STR_LEN, m_S m_S m_S, 
 	       fli->m_incomplete_directory, fnbase, fli->m_extension);
     if (fli->m_keep_incomplete) {
@@ -804,11 +806,12 @@ parse_and_subst_pat (RIP_MANAGER_INFO* rmi,
     int nfi = 0;
     int done;
     gchar* pat = pattern;
+    gchar* fullpath = directory;
 
     /* Reserve 5 bytes: 4 for the .mp3 extension, and 1 for null char */
     int MAX_FILEBASELEN = SR_MAX_PATH-5;
 
-    mstrcpy (newfile, directory);
+    mstrcpy (newfile, "");
     opi = 0;
     nfi = mstrlen(newfile);
     done = 0;
@@ -929,6 +932,10 @@ parse_and_subst_pat (RIP_MANAGER_INFO* rmi,
 	    continue;
 	}
     }
+
+    replace_spaces (newfile);
+    mstrncat (fullpath, newfile, SR_MAX_PATH);
+    mstrcpy (newfile, fullpath);
 
     /* Pop on the extension */
     /* GCS FIX - is SR_MAX_PATH right here? */
@@ -1405,6 +1412,42 @@ replace_invalid_chars (gchar *str)
 	    /* Do nothing -- skip control characters without replacement */
 	}
 	else if (mstrchr(invalid_chars, *oldstr) == NULL) {
+	    /* Ordinary case -- copy */
+	    *newstr++ = *oldstr;
+	}
+	else {
+	    /* Replace case -- append replacement char */
+	    *newstr++ = replacement;
+	}
+    }
+    *newstr = '\0';
+
+    return str;
+}
+
+static gchar*
+replace_spaces (gchar *str)
+{
+    gchar spaces[] = m_(" ");
+    gchar replacement = m_('_');
+
+    gchar *oldstr = str;
+    gchar *newstr = str;
+
+    if (!str) return NULL;
+
+    /* Skip leading "." */
+    for (;*oldstr; oldstr++) {
+	if (*oldstr != '.') {
+	    break;
+	}
+    }
+
+    for (;*oldstr; oldstr++) {
+	if (g_ascii_iscntrl (*oldstr)) {
+	    /* Do nothing -- skip control characters without replacement */
+	}
+	else if (mstrchr(spaces, *oldstr) == NULL) {
 	    /* Ordinary case -- copy */
 	    *newstr++ = *oldstr;
 	}
