@@ -806,11 +806,12 @@ parse_and_subst_pat (RIP_MANAGER_INFO* rmi,
     int nfi = 0;
     int done;
     gchar* pat = pattern;
-    gchar* fullpath = directory;
+    gchar fullpath[SR_MAX_PATH];
 
     /* Reserve 5 bytes: 4 for the .mp3 extension, and 1 for null char */
     int MAX_FILEBASELEN = SR_MAX_PATH-5;
 
+    mstrncpy (fullpath, directory, SR_MAX_PATH);
     mstrcpy (newfile, "");
     opi = 0;
     nfi = mstrlen(newfile);
@@ -1120,7 +1121,7 @@ filelib_write (FHANDLE fp, char *buf, u_long size)
 
 /* This function takes in a directory, filename base, and extension, 
    and renames any existing file "${directory}/${fnbase}${extensions}"
-   to a file of the form "${directory}/${fnbase} (${n}}${extensions}" 
+   to a file of the form "${directory}/${fnbase} (${n})${extensions}" 
 
    The new name for the file is returned in new_fn (if new_fn is not 0).
 */
@@ -1147,7 +1148,7 @@ filelib_rename_versioned (gchar** new_fn, RIP_MANAGER_INFO* rmi,
 
     for (n = 1; n <= G_MAXINT; n++) {
 	gchar *ren_file, *ren_path;
-	ren_file = g_strdup_printf ("%s (%d)%s", fnbase, n, extension);
+	ren_file = g_strdup_printf ("%s_(%d)%s", fnbase, n, extension);
 	ren_path = g_build_filename (directory, ren_file, NULL);
 	if (file_exists (rmi, ren_path)) {
 	    g_free (ren_file);
